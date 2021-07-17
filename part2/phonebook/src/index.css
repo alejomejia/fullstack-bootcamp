@@ -1,0 +1,133 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  position: relative;
+  background-color: #f3f3f3;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body,
+#root {
+  min-height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.container {
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+h1 {
+  margin-bottom: 24px;
+  color: #212;
+}
+
+h2 {
+  color: #3d3d3d;
+  font-size: 21px;
+  margin-bottom: 16px;
+}
+
+p {
+  color: #565656;
+}
+
+.card {
+  padding: 24px;
+  background-color: #fff;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+label {
+  cursor: pointer;
+  display: inline-block;
+  color: #565656;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+input {
+  display: block;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  border-radius: 4px;
+  color: #3d3d3d;
+}
+
+form input:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  color: #fff;
+  font-weight: bold;
+  background-color: #212121;
+  padding: 12px 16px;
+  border-radius: 4px;
+}
+
+button.delete {
+  border: 2px solid #d50b0b;
+  color: #d50b0b;
+  background-color: transparent;
+  padding: 6px 12px;
+}
+
+button.delete:hover {
+  color: #fff;
+  background-color: #d50b0b;
+}
+
+.search {
+  margin-bottom: 24px;
+}
+
+.persons .person:last-child {
+  border-bottom: none;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0;
+  border-top: 1px solid #e6e6e6;
+}
+
+.notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 16px;
+  margin-bottom: 0;
+  background-color: #fff;
+  border: 2px solid;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.notification.success {
+  border-color: #15b015;
+  color: #15b015;
+}
+
+.notification.error {
+  border-color: #d50b0b;
+  color: #d50b0b;
+}
