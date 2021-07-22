@@ -1,17 +1,17 @@
-import PERSONS from "../../services/persons";
+import PERSONS from '../../services/persons'
 
 const Person = ({ id, name, number, persons, setPersons }) => {
   const handleDelete = () => {
     const askForDelete = window.confirm(
       `Are you sure you want to remove ${name}?`
-    );
+    )
 
     if (askForDelete) {
       PERSONS.remove(id).then(() => {
-        setPersons(persons.filter((person) => person.id !== id));
-      });
+        setPersons(persons.filter((person) => person.id !== id))
+      })
     }
-  };
+  }
 
   return (
     <div className="person">
@@ -26,7 +26,7 @@ const Person = ({ id, name, number, persons, setPersons }) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Person;
+export default Person

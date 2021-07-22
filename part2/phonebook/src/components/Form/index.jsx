@@ -10,15 +10,10 @@ const Form = ({
       <label htmlFor="name">Name</label>
       <input id="name" value={newName} onChange={handleNewName} />
       <label htmlFor="number">Number</label>
-      <input
-        id="number"
-        type="number"
-        value={newNumber}
-        onChange={handleNewNumber}
-      />
+      <input id="number" value={newNumber} onChange={handleNewNumber} />
       <button className="add">Add New Person</button>
     </form>
-  );
-};
+  )
+}
 
-export default Form;
+export default Form

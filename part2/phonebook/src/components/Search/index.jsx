@@ -4,7 +4,7 @@ const Search = ({ search, handleSearch }) => {
       <label htmlFor="search">Search by name</label>
       <input id="search" value={search} onChange={handleSearch} />
     </div>
-  );
-};
+  )
+}
 
-export default Search;
+export default Search

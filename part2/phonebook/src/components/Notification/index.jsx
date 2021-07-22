@@ -3,7 +3,7 @@ const Notification = ({ message, type }) => {
     <div className={`notification ${type}`}>
       <span>{message}</span>
     </div>
-  );
-};
+  )
+}
 
-export default Notification;
+export default Notification
