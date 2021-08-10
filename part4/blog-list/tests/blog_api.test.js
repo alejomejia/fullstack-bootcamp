@@ -6,12 +6,18 @@ const api = supertest(app)
 
 const Blog = require('../models/blog')
 
-beforeEach(async () => {
-  await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
-})
-
 describe('blogs api', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+
+    const initialBlogs = helper.initialBlogs
+    const userId = await helper.getUserId()
+
+    initialBlogs.map((blog) => (blog.userId = userId))
+
+    await Blog.insertMany(initialBlogs)
+  })
+
   test('are returned as json', async () => {
     await api
       .get('/api/blogs')
@@ -30,16 +36,20 @@ describe('blogs api', () => {
   })
 
   test('a valid blog can be added', async () => {
+    const userId = await helper.getUserId()
+    const userToken = await helper.getUserToken()
+
     const newBlog = {
       title: 'How to test a POST request using Jest',
       author: 'Alejandro Mejia',
-      url: 'http://google.com/how-to-test-post-using-jest',
       likes: 0,
-      id: '60fa12a94eeecd3f81669ac8',
+      url: 'http://google.com/how-to-test-post-using-jest',
+      userId,
     }
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${userToken}`)
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -52,15 +62,19 @@ describe('blogs api', () => {
   })
 
   test('if new item likes missing, is 0 by default', async () => {
+    const userId = await helper.getUserId()
+    const userToken = await helper.getUserToken()
+
     const newBlog = {
       title: 'How to test a default key with Jest',
       author: 'Alejandro Mejia',
       url: 'http://google.com/how-to-test-default-key',
-      id: '60fa12a94eeecd3f81669ac9',
+      userId,
     }
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${userToken}`)
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -71,23 +85,34 @@ describe('blogs api', () => {
   })
 
   test('if title and url is missing, response is 400', async () => {
+    const userId = await helper.getUserId()
+    const userToken = await helper.getUserToken()
+
     const newBlog = {
       author: 'Alejandro Mejia',
-      id: '60fa12a94eeecd3f81669ac1',
+      userId,
     }
 
-    await api.post('/api/blogs').send(newBlog).expect(400)
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${userToken}`)
+      .send(newBlog)
+      .expect(400)
   })
 
-  test('a single blog post can be deleted', async () => {
+  test.only('a single blog post can be deleted only by the owner', async () => {
+    const userToken = await helper.getUserToken()
+
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `bearer ${userToken}`)
+      .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
-
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
 
     const title = blogsAtEnd.map((blog) => blog.title)
     expect(title).not.toContain(blogToDelete.title)
@@ -95,7 +120,6 @@ describe('blogs api', () => {
 
   test('blog item can be updated', async () => {
     const blogsAtStart = await helper.blogsInDb()
-    console.log(blogsAtStart)
 
     const updatedItem = {
       ...blogsAtStart[0],
@@ -107,56 +131,6 @@ describe('blogs api', () => {
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd[0].likes).toBe(1)
   })
-
-  /*
-    test('all blogs are returned', async () => {
-      const response = await api.get('/api/notes')
-      expect(response.body).toHaveLength(helper.initialNotes.length)
-    })
-
-    test('note without content is not added', async () => {
-      const newNote = {
-        important: true
-      }
-
-      await api
-        .post('/api/notes')
-        .send(newNote)
-        .expect(400)
-
-      const notesAtEnd = await helper.notesInDb()
-
-      expect(notesAtEnd).toHaveLength(helper.initialNotes.length)
-    })
-
-    test('a specific note is within the returned notes', async () => {
-      const response = await api.get('/api/notes')
-      const contents = response.body.map(r => r.content)
-      expect(contents).toContain(
-        'Browser can execute only Javascript'
-      )
-    })
-
-    test('the first note is about HTTP methods', async () => {
-      const response = await api.get('/api/notes')
-      expect(response.body[0].content).toBe('HTML is easy')
-    })
-
-    test('a specific note can be viewed', async () => {
-      const notesAtStart = await helper.notesInDb()
-
-      const noteToView = notesAtStart[0]
-
-      const resultNote = await api
-        .get(`/api/notes/${noteToView.id}`)
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-
-      const processedNoteToView = JSON.parse(JSON.stringify(noteToView))
-
-      expect(resultNote.body).toEqual(processedNoteToView)
-    })
-  */
 })
 
 afterAll(() => mongoose.connection.close())
